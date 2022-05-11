@@ -11,4 +11,4 @@ Expected is a string containing the id expected. If multiple ids, they are comma
 Matched is a string containing the id matched. If multiple ids, they are comma delimited.
 
 ## Start app
-`FLASK_APP=project/webapp.py python -m flask run`
+`make start`
