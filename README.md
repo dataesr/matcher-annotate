@@ -10,5 +10,11 @@ Strategy is a string containing the strategy that matched.
 Expected is a string containing the id expected. If multiple ids, they are comma delimited.
 Matched is a string containing the id matched. If multiple ids, they are comma delimited.
 
+## Logs file
+Path to log file should be put in a `.env` file as `LOG_FILE_PATH` var.
+
 ## Start app
 `make start`
+
+## Requirements
+python-dotenv

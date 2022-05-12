@@ -1,7 +1,8 @@
+from bs4 import BeautifulSoup
 import json
+import os
 import pandas as pd
 import requests
-from bs4 import BeautifulSoup
 
 from flask import render_template
 from . import app
@@ -52,7 +53,8 @@ def home():
 
 @app.route('/logs')
 def logs():
-    with open(f'{DATA_FOLDER}/matcher-affiliation-grids.jsonl') as file:
+    LOG_FILE_PATH = os.getenv('LOG_FILE_PATH', 'data/logs-examples.jsonl')
+    with open(LOG_FILE_PATH) as file:
         logs = file.readlines()
     return {'logs': logs}
 

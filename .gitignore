@@ -1,5 +1,16 @@
-data
-__pycache__
+# Python
+*.pyc
+*.mypy_cache*
+.mypy*
 venv
-.vscode
+
+# Data
+data/*
+!data/logs-examples.jsonl
+
+# IDE
 .idea
+.vscode
+
+# Env file
+.env
