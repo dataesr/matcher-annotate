@@ -27,10 +27,10 @@ python-dotenv
 
 ## API
 
-| endpoint | method |   args   | description |
-| -------- | ------ | -------- | ----------- |
+| endpoint | method |   query params   | description |
+| -------- | ------ | ---------------- | ----------- |
 | / | GET | None | Display the homepage |
-| /check | GET | None | Execute the matcher against our reference data file |
+| /check | GET | type ('grid') | Execute the matcher against our reference data file |
 | /logs | GET | None | Return list of logs as array |
 | /navigate | GET | None | Navigate through the logs |
 | /grid/GRID_ID | GET | None | Get all Grid info for a given GRID_ID in JSON |

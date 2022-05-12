@@ -3,12 +3,10 @@ import json
 import pandas as pd
 import requests
 
-from flask import render_template
+from flask import render_template, request
 from . import app
-from config import DATA_URL, LOG_FILE_PATH, MATCHER_URL
+from .config import DATA_URL, LOG_FILE_PATH, MATCHER_URL
 
-
-MATCHER_TYPE = 'grid'
 
 strategies = [
     ['grid_name', 'grid_acronym', 'grid_city', 'grid_country'],
@@ -110,9 +108,10 @@ def rnsr(id):
 @app.route('/check')
 def check():
     # Load data
+    type = request.args.get('type', 'grid')
     data = requests.get(DATA_URL).json()
     df = pd.DataFrame(data).rename(columns={'grid': 'expected'})
-    # Remove data with no grid
+    # Remove data with no expectation
     df = df[df.expected.map(len) > 0]
     df = df[df['source'] == 'pubmed']
     df['matched'] = None
@@ -125,7 +124,7 @@ def check():
         if len(expected) > 0:
             for strategy in strategies:
                 strategy = [[strategy]]
-                json_object = {'type': MATCHER_TYPE, 'query': query, 'strategies': strategy}
+                json_object = {'type': type, 'query': query, 'strategies': strategy}
                 response = requests.post(url=f'{MATCHER_URL}/match_api', json=json_object)
                 matched = response.json().get('results')
                 if len(matched) > 0:
@@ -147,7 +146,7 @@ def check():
                 df['is_matched'][index] = is_matched
         else:
             # This should never happen anymore
-            print(f'No grid expected for query {query}')
+            print(f'Nothing expected for query {query}')
     # Calculate the precision by strategy
     df_results = df
     df_pubmed_filtered = df_results[df_results.strategy.notnull()]
@@ -160,17 +159,17 @@ def check():
         results[strategy]['count'] += 1
         matcheds = row.get('matched', [])
         matcheds = matcheds if matcheds else []
-        for grid in matcheds:
+        for matched in matcheds:
             expected = row.get('expected', [])
-            if grid in expected:
+            if matched in expected:
                 results[strategy]['vp'] += 1
             else:
                 results[strategy]['fp'] += 1
-                if strategy == 'grid_name,grid_city,grid_country':
-                    logs.append({'type': MATCHER_TYPE, 'query': row.get('label'), 'strategy': strategy, 'expected': ','.join(expected), 'matched': grid})
+                # Log only FP results
+                logs.append({'type': type, 'query': row.get('label'), 'strategy': strategy, 'expected': ','.join(expected), 'matched': matched})
     for result in results:
         results[result]['precision'] = round(results[result]['vp'] / (results[result]['vp'] + results[result]['fp']) * 100, 2)
-    with open('data/matcher-affiliation-examples-lalilou.jsonl', 'w') as file:
+    with open(LOG_FILE_PATH, 'w') as file:
         for log in logs:
             json.dump(log, file)
             file.write('\n')
