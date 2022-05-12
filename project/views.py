@@ -107,8 +107,8 @@ def rnsr(id):
     }
 
 
-@app.route('/matcher_check_strategies')
-def matcher_check_strategies():
+@app.route('/check')
+def check():
     # Load data
     data = requests.get(DATA_URL).json()
     df = pd.DataFrame(data).rename(columns={'grid': 'expected'})

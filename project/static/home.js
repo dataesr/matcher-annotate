@@ -1,6 +1,6 @@
 $(document).ready(() => {
     $('.actions .check').click(() => {
-        $.ajax({url: '/matcher_check_strategies'}).done((response) => {
+        $.ajax({url: '/check'}).done((response) => {
             html = '<table>';
             html += '<tr><th>Strategy</th><th>Count</th><th>Precision</th><th>True Positiv</th></tr>'
             strategies = Object.keys(response);
