@@ -13,7 +13,7 @@ displayStructure = (id, status, match_type) => {
                 html += '</div>'
             }
             html += '</li>'
-            $(`.${status} div ul`).html(html);
+            $(`.${status} div ul`).append(html);
         });
 };
 
@@ -22,11 +22,12 @@ loadData = (log) => {
     $('.query').html(log?.query);
     $('.strategy').html(log?.strategy);
     expecteds = log.expected.split(',').filter(expected => expected.length > 0);
+    console.log(expecteds);
     if (expecteds.length === 0) {
         $('.expected div').html('Nothing expected');
     } else {
         for (index in expecteds) {
-            displayStructure(id=expecteds[index], status='expected', match_type=log.type);
+            displayStructure(id=expecteds[index], 'expected', match_type=log.type);
         }
     }
     matcheds = log.matched.split(',').filter(matched => matched.length > 0);
@@ -34,21 +35,19 @@ loadData = (log) => {
         $('.matched div').html('Nothing matched');
     } else {
         for (index in matcheds) {
-            displayStructure(id=matcheds[index], status='matched', match_type=log.type);
+            displayStructure(id=matcheds[index], 'matched', match_type=log.type);
         }
     }
 };
 
-// INit
+// Init
 $('.row').hide();
 
 $(document).ready(() => {
     let index = 0;
-    $('#previous').prop('disabled', true);
+    $('.actions .previous').prop('disabled', true);
     // Load data
-    // TODO: Add spinner while loading data
     $.ajax({url: '/logs'}).done((response) => {
-        console.log('DONE');
         logs = [];
         for(i = 0; i < response.logs.length; i++) {
             logs.push(JSON.parse(response.logs[i]));
@@ -56,18 +55,20 @@ $(document).ready(() => {
         loadData(log=logs[index]);
         $('.row').show();
         $('.message').hide();
-        $('#next').click(() => {
-            // TODO: Add spinner while loading next data
+        $('.actions .next').click(() => {
             index++;
-            $('#previous').prop('disabled', index === 0);
-            $('#next').prop('disabled', index === logs.length - 1);
+            $('.actions .previous').prop('disabled', index === 0);
+            $('.actions .next').prop('disabled', index === logs.length - 1);
+            $('.expected div').html('<ul></ul>');
+            $('.matched div').html('<ul></ul>');
             loadData(log=logs[index]);
         });
-        $('#previous').click(() => {
-            // TODO: Add spinner while loading next data
+        $('.actions .previous').click(() => {
             index--;
-            $('#previous').prop('disabled', index === 0);
-            $('#next').prop('disabled', index === logs.length - 1);
+            $('.actions .previous').prop('disabled', index === 0);
+            $('.actions .next').prop('disabled', index === logs.length - 1);
+            $('.expected div').html('<ul></ul>');
+            $('.matched div').html('<ul></ul>');
             loadData(log=logs[index]);
         });
     });

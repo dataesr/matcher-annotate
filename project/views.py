@@ -52,7 +52,6 @@ def home():
 
 @app.route('/logs')
 def logs():
-    # with open(f'{DATA_FOLDER}/matcher-affiliation-examples.jsonl') as file:
     with open(f'{DATA_FOLDER}/matcher-affiliation-grids.jsonl') as file:
         logs = file.readlines()
     return {'logs': logs}
