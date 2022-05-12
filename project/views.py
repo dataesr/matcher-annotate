@@ -7,7 +7,6 @@ import requests
 from flask import render_template
 from . import app
 
-DATA_FOLDER = 'data'
 DATA_URL = 'https://storage.gra.cloud.ovh.net/v1/AUTH_32c5d10cb0fe4519b957064a111717e3/models/pubmed_and_h2020_affiliations.json'
 MATCHER_TYPE = 'grid'
 MATCHER_URL = 'http://localhost:5004'
@@ -49,6 +48,11 @@ strategies = [
 @app.route('/')
 def home():
     return render_template('home.html')
+
+
+@app.route('/navigate')
+def navigate():
+    return render_template('navigate.html')
 
 
 @app.route('/logs')
@@ -109,30 +113,31 @@ def rnsr(id):
 def matcher_check_strategies():
     # Load data
     data = requests.get(DATA_URL).json()
-    df = pd.DataFrame(data).rename(columns={'grid': 'grid_expected'})
+    df = pd.DataFrame(data).rename(columns={'grid': 'expected'})
     # Remove data with no grid
-    df = df[df.grid_expected.map(len) > 0]
+    df = df[df.expected.map(len) > 0]
     df = df[df['source'] == 'pubmed']
-    df['grid_matched'] = None
+    df['matched'] = None
     df['strategy'] = None
     df['is_matched'] = 'empty'
+    # df = df[:50]
     for index, row in df.iterrows():
         query = row.label
-        grid_expected = row.grid_expected
-        if len(grid_expected) > 0:
+        expected = row.expected
+        if len(expected) > 0:
             for strategy in strategies:
                 strategy = [[strategy]]
                 json_object = {'type': MATCHER_TYPE, 'query': query, 'strategies': strategy}
                 response = requests.post(url=f'{MATCHER_URL}/match_api', json=json_object)
-                grid_matched = response.json().get('results')
-                if len(grid_matched) > 0:
+                matched = response.json().get('results')
+                if len(matched) > 0:
                     # Stop at the first result found
                     break
             # If at least one strategy has a match
-            if len(grid_matched) > 0:
-                df['grid_matched'][index] = grid_matched
+            if len(matched) > 0:
+                df['matched'][index] = matched
                 df['strategy'][index] = strategy[0][0]
-                diff = list(set(grid_expected) - set(grid_matched))
+                diff = list(set(expected) - set(matched))
                 if len(diff) == 0:
                     is_matched = 'complete'
                 elif len(diff) > 0:
@@ -145,6 +150,7 @@ def matcher_check_strategies():
         else:
             # This should never happen anymore
             print(f'No grid expected for query {query}')
+    print(df)
     # Calculate the precision by strategy
     df_results = df
     print(len(df_results))
@@ -158,19 +164,20 @@ def matcher_check_strategies():
         if strategy not in results.keys():
             results[strategy] = {'vp': 0, 'fp': 0, 'count': 0}
         results[strategy]['count'] += 1
-        grids_matched = row.get('grid_matched', [])
-        grids_matched = grids_matched if grids_matched else []
-        for grid in grids_matched:
-            grid_expected = row.get('grid_expected', [])
-            if grid in grid_expected:
+        matcheds = row.get('matched', [])
+        matcheds = matcheds if matcheds else []
+        for grid in matcheds:
+            expected = row.get('expected', [])
+            if grid in expected:
                 results[strategy]['vp'] += 1
             else:
                 results[strategy]['fp'] += 1
                 if strategy == 'grid_name,grid_city,grid_country':
-                    logs.append({'query': row.get('label'), 'strategy': strategy, 'grid_expected': ','.join(grid_expected), 'grid_matched': grid})
+                    logs.append({'type': MATCHER_TYPE, 'query': row.get('label'), 'strategy': strategy, 'expected': ','.join(expected), 'matched': grid})
     for result in results:
         results[result]['precision'] = round(results[result]['vp'] / (results[result]['vp'] + results[result]['fp']) * 100, 2)
-    with open(f'{DATA_FOLDER}/matcher-affiliation-examples-lalilou.jsonl', 'w') as file:
+    print(logs)
+    with open('data/matcher-affiliation-examples-lalilou.jsonl', 'w') as file:
         for log in logs:
             json.dump(log, file)
             file.write('\n')

@@ -28,6 +28,7 @@ python-dotenv
 | endpoint | method |   args   | description |
 | -------- | ------ | -------- | ----------- |
 | / | GET | None | Display the homepage |
+| /navigate | GET | None | Navigate through the logs |
 | /logs | GET | None | Return list of logs as array |
 | /grid/GRID_ID | GET | None | Get all Grid info for a given GRID_ID in JSON |
 | /rnsr/RNSR_ID | GET | None | Get all RNSR info for a given RNSR_ID in JSON |

@@ -1,5 +1,6 @@
-displayStructure = (id, status, match_type) => {
-    $.ajax({url: `/${match_type}/${id}`})
+displayStructure = (id, status, matcher_type) => {
+    if (matcher_type) {
+        $.ajax({url: `/${matcher_type}/${id}`})
         .done(response => {
             html = '<li>';
             for (attribute in response) {
@@ -15,6 +16,9 @@ displayStructure = (id, status, match_type) => {
             html += '</li>'
             $(`.${status} div ul`).append(html);
         });
+    } else {
+        console.error('The matcher type is missing, please check your logs file.');
+    }
 };
 
 loadData = (log) => {
@@ -26,7 +30,7 @@ loadData = (log) => {
         $('.expected div').html('Nothing expected');
     } else {
         for (index in expecteds) {
-            displayStructure(id=expecteds[index], 'expected', match_type=log.type);
+            displayStructure(id=expecteds[index], 'expected', matcher_type=log.type);
         }
     }
     matcheds = log.matched.split(',').filter(matched => matched.length > 0);
@@ -34,7 +38,7 @@ loadData = (log) => {
         $('.matched div').html('Nothing matched');
     } else {
         for (index in matcheds) {
-            displayStructure(id=matcheds[index], 'matched', match_type=log.type);
+            displayStructure(id=matcheds[index], 'matched', matcher_type=log.type);
         }
     }
 };
