@@ -1,3 +1,7 @@
 .row {
     margin: 8px;
 }
+
+li {
+    padding-bottom: 12px;
+}

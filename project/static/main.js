@@ -22,7 +22,6 @@ loadData = (log) => {
     $('.query').html(log?.query);
     $('.strategy').html(log?.strategy);
     expecteds = log.expected.split(',').filter(expected => expected.length > 0);
-    console.log(expecteds);
     if (expecteds.length === 0) {
         $('.expected div').html('Nothing expected');
     } else {
