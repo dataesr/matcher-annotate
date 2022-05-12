@@ -13,9 +13,11 @@ Matched is a string containing the id matched. If multiple ids, they are comma d
 An example file, can be found in the repo under `data/logs-examples.jsonl`.
 
 ## Config
-Path to log file should be put in a `.env` file as `LOG_FILE_PATH` var.
-
-Default is `data/logs-examples.jsonl`.
+Create a `.env` file at the root of the project.
+Set var env as :
+* DATA_URL : string : url to grab the dataset to check : None
+* LOG_FILE_PATH : string : path to store the logs : data/logs-examples.jsonl
+* MATCHER_URL : string : url to query the matcher : http://localhost:5004
 
 ## Start app
 `make start`

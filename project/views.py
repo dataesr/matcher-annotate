@@ -1,15 +1,14 @@
 from bs4 import BeautifulSoup
 import json
-import os
 import pandas as pd
 import requests
 
 from flask import render_template
 from . import app
+from config import DATA_URL, LOG_FILE_PATH, MATCHER_URL
 
-DATA_URL = 'https://storage.gra.cloud.ovh.net/v1/AUTH_32c5d10cb0fe4519b957064a111717e3/models/pubmed_and_h2020_affiliations.json'
+
 MATCHER_TYPE = 'grid'
-MATCHER_URL = 'http://localhost:5004'
 
 strategies = [
     ['grid_name', 'grid_acronym', 'grid_city', 'grid_country'],
@@ -57,7 +56,6 @@ def navigate():
 
 @app.route('/logs')
 def logs():
-    LOG_FILE_PATH = os.getenv('LOG_FILE_PATH', 'data/logs-examples.jsonl')
     with open(LOG_FILE_PATH) as file:
         logs = file.readlines()
     return {'logs': logs}
