@@ -1,1 +1,21 @@
-Home
+{% extends "bootstrap/base.html" %}
+
+{% block scripts %}
+  {{super()}}
+  <script src="{{url_for('.static', filename='home.js')}}"></script>
+{% endblock %}
+
+{% block title %}Matcher Annotate{% endblock %}
+
+{% block content %}
+  <h1>Matcher Annotate</h1>
+  <div class="actions">
+      <button class="btn btn-primary check">
+          Matcher check strategies
+      </button>
+      <a class="btn btn-primary navigate" href="./navigate">
+          Navigate through logs
+      </a>
+  </div>
+  <div class="results"></div>
+{% endblock %}

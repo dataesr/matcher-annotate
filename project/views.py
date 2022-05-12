@@ -120,7 +120,7 @@ def matcher_check_strategies():
     df['matched'] = None
     df['strategy'] = None
     df['is_matched'] = 'empty'
-    # df = df[:50]
+    df = df[:50]
     for index, row in df.iterrows():
         query = row.label
         expected = row.expected
@@ -150,13 +150,9 @@ def matcher_check_strategies():
         else:
             # This should never happen anymore
             print(f'No grid expected for query {query}')
-    print(df)
     # Calculate the precision by strategy
     df_results = df
-    print(len(df_results))
     df_pubmed_filtered = df_results[df_results.strategy.notnull()]
-    print(len(df_pubmed_filtered))
-    print('---')
     results = {}
     logs = []
     for index, row in df_pubmed_filtered.iterrows():
@@ -176,7 +172,6 @@ def matcher_check_strategies():
                     logs.append({'type': MATCHER_TYPE, 'query': row.get('label'), 'strategy': strategy, 'expected': ','.join(expected), 'matched': grid})
     for result in results:
         results[result]['precision'] = round(results[result]['vp'] / (results[result]['vp'] + results[result]['fp']) * 100, 2)
-    print(logs)
     with open('data/matcher-affiliation-examples-lalilou.jsonl', 'w') as file:
         for log in logs:
             json.dump(log, file)
