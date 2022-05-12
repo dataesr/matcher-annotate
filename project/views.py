@@ -170,7 +170,7 @@ def matcher_check_strategies():
                     logs.append({'query': row.get('label'), 'strategy': strategy, 'grid_expected': ','.join(grid_expected), 'grid_matched': grid})
     for result in results:
         results[result]['precision'] = round(results[result]['vp'] / (results[result]['vp'] + results[result]['fp']) * 100, 2)
-    with open(f'{DATA_FOLDER}/matcher-affiliation-examples.jsonl', 'w') as file:
+    with open(f'{DATA_FOLDER}/matcher-affiliation-examples-lalilou.jsonl', 'w') as file:
         for log in logs:
             json.dump(log, file)
             file.write('\n')
