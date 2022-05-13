@@ -5,8 +5,7 @@
 venv
 
 # Data
-data/*
-!data/logs-examples.jsonl
+data
 
 # IDE
 .idea

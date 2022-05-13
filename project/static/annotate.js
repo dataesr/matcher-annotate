@@ -43,11 +43,24 @@ loadData = (log) => {
     }
 };
 
-// Init
-$('.row').hide();
+lalilou = (logs, index) => {
+    const annotateAction = $("input[name='annotateAction']:checked").val();
+    if (annotateAction && annotateAction !== 'nothing') {
+        actions[index] = { ...logs[index], 'action': annotateAction }
+    }
+    $('.actions .previous').prop('disabled', index === 0);
+    $('.actions .next').prop('disabled', index === logs.length - 1);
+    $('.expected div').html('<ul></ul>');
+    $('.matched div').html('<ul></ul>');
+    loadData(log=logs[index]);
+};
 
+// Init
+let actions;
+$('.row').hide();
 $(document).ready(() => {
     let index = 0;
+    actions = {};
     $('.actions .previous').prop('disabled', true);
     // Load data
     $.ajax({url: '/logs'}).done((response) => {
@@ -60,19 +73,11 @@ $(document).ready(() => {
         $('.message').hide();
         $('.actions .next').click(() => {
             index++;
-            $('.actions .previous').prop('disabled', index === 0);
-            $('.actions .next').prop('disabled', index === logs.length - 1);
-            $('.expected div').html('<ul></ul>');
-            $('.matched div').html('<ul></ul>');
-            loadData(log=logs[index]);
+            lalilou(logs, index);
         });
         $('.actions .previous').click(() => {
             index--;
-            $('.actions .previous').prop('disabled', index === 0);
-            $('.actions .next').prop('disabled', index === logs.length - 1);
-            $('.expected div').html('<ul></ul>');
-            $('.matched div').html('<ul></ul>');
-            loadData(log=logs[index]);
+            lalilou(logs, index);
         });
     });
 });

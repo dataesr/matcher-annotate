@@ -2,12 +2,12 @@
 
 {% block scripts %}
   {{super()}}
-  <script src="{{url_for('.static', filename='navigate.js')}}"></script>
+  <script src="{{url_for('.static', filename='annotate.js')}}"></script>
 {% endblock %}
 
 {% block styles %}
   {{super()}}
-  <link rel="stylesheet" href="{{url_for('.static', filename='navigate.css')}}">
+  <link rel="stylesheet" href="{{url_for('.static', filename='annotate.css')}}">
 {% endblock %}
 
 
@@ -22,15 +22,27 @@
     </div>
     <div class="row">
       <div>
-        <span>Matcher type :</span>
+        <span>
+          <strong>
+            Matcher type :
+          </strong>
+        </span>
         <span class="type"></span>
       </div>
       <div>
-        <span>Query :</span>
+        <span>
+          <strong>
+            Query :
+          </strong>
+        </span>
         <span class="query"></span>
       </div>
       <div>
-        <span>Strategy :</span>
+        <span>
+          <strong>
+            Strategy :
+          </strong>
+        </span>
         <span class="strategy"></span>
       </div>
     </div>
@@ -58,21 +70,24 @@
           < Previous
         </button>
       </div>
-      <div class="col-md-6 text-center">
-        <button class="btn btn-primary add">
-          Add
-        </button>
-        <button class="btn btn-primary replace">
-          Replace
-        </button>
-        <button class="btn btn-primary dont">
-          Don't
-        </button>
+      <div class="col-md-6 text-center btn-group" data-toggle="buttons">                            
+        <label class="btn btn-primary">
+          <input name="annotateAction" type="radio" value="add">Add
+        </label>
+        <label class="btn btn-primary">
+          <input name="annotateAction" type="radio" value="replace">Replace
+        </label>
+        <label class="btn btn-primary">
+          <input name="annotateAction" type="radio" value="nothing">Nothing
+        </label>
       </div>
       <div class="col-md-3 text-right">
         <button class="btn btn-primary next">
           Next >
         </button>
+        <a class="btn btn-primary done" href="./">
+          Done
+        </a>
       </div>
     </div>
   </div>

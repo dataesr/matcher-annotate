@@ -3,7 +3,7 @@ import json
 import pandas as pd
 import requests
 
-from flask import render_template, request
+from flask import jsonify, render_template, request
 from . import app
 from .config import DATA_URL, LOG_FILE_PATH, MATCHER_URL
 
@@ -47,9 +47,9 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/navigate')
+@app.route('/annotate')
 def navigate():
-    return render_template('navigate.html')
+    return render_template('annotate.html')
 
 
 @app.route('/logs')
@@ -117,7 +117,7 @@ def check():
     df['matched'] = None
     df['strategy'] = None
     df['is_matched'] = 'empty'
-    df = df[:50]
+    # df = df[:50]
     for index, row in df.iterrows():
         query = row.label
         expected = row.expected
@@ -173,4 +173,6 @@ def check():
         for log in logs:
             json.dump(log, file)
             file.write('\n')
-    return results
+    with open('data/results.json', 'w') as file:
+        json.dump(results, file)
+    return jsonify({'status': 'success'})

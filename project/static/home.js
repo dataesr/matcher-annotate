@@ -13,4 +13,7 @@ $(document).ready(() => {
             $('.results').html(html);
         });
     });
+    $('.actions .save').click(() => {
+        console.log('To Be Done');
+    });
 });
